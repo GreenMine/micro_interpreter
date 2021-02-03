@@ -6,8 +6,7 @@ pub fn interpretate_string(mut input: &str, variables: &HashMap<String, i32>) ->
         result += &input[..start];
 
         //Code block parsing
-        let current_expr = &input[start..end];
-        println!("In code block expr: {}", current_expr);
+        //println!("In code block expr: {}", &input[start..end]);
 
         result += &super::parse_expr(&input[start + 2..end - 1], variables)?[..];
 
