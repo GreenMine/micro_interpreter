@@ -1,6 +1,10 @@
 use std::collections::HashMap;
 
+mod btree;
+//use btree::BNode;
+
 fn main() {
+
     let mut variables: HashMap<String, i32> = HashMap::new();
     
     variables.insert("A".to_string(), 1);
@@ -8,7 +12,7 @@ fn main() {
 
 
     //let command_example = "A: ${$A}\nB: ${$B==true?10:15}";
-    let command_example = "A: ${$A}\nB: ${$B}";
+    let command_example = "A: ${$A}\nB: ${$B ? 1 : 2}";
     println!("Interpretated result: {:?}", interpretate_string(command_example, &mut variables));
 }
 
@@ -21,7 +25,7 @@ fn interpretate_string(mut input: &str, variables: &mut HashMap<String, i32>) ->
         let current_expr = &input[start..end];
         println!("In code block expr: {}", current_expr);
 
-        result += &parse_expr(&input[start + 2..end - 1],  variables).unwrap()[..];
+        result += &parse_expr(&input[start + 2..end - 1],  variables)?[..];
 
         input = &input[end..];
     }
@@ -33,18 +37,34 @@ fn interpretate_string(mut input: &str, variables: &mut HashMap<String, i32>) ->
 fn parse_expr(expr: &str, variables: &mut HashMap<String, i32>) -> Result<String, ()> {
     let tokenized = tokenize(expr);
 
-    if tokenized.len() == 0 {
+    if let Ok(res) = token_parse(&tokenized[..], variables) {
+        return Ok(res);
+    }
+
+    if let Some(pos) = tokenized.iter()
+                                      .position(|t| *t == Token::Operation(Operation::TernaryQuestion)) {
+       let left_side_result = {
+           println!("Left token result: {:?}", token_parse(&tokenized[..pos], variables));
+       };
+    }
+
+    unimplemented!()
+}
+
+fn token_parse(tokens: &[Token], variables: &mut HashMap<String, i32>) -> Result<String, ()> {
+    println!("Tokens len: {}", tokens.len());
+    if tokens.len() == 0 {
         return Err(());
     }
-    if tokenized.len() == 1 {
-        if let Token::Variable(var) = tokenized[0] {
+    if tokens.len() == 1 {
+        if let Token::Variable(var) = tokens[0] {
             return Ok(variables[var].to_string());
         } else {
             return Err(());
         }
     }
 
-    unimplemented!()
+    Err(())
 }
 
 fn tokenize(input: &str) -> Vec<Token> {
@@ -80,7 +100,7 @@ fn is_variable_name(symbol: char) -> bool {
     symbol.is_alphabetic()
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 enum Token<'a> {
     StrLiteral(&'a str),
     Variable(&'a str),
@@ -89,7 +109,7 @@ enum Token<'a> {
     EndBracket
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 enum Operation {
     Plus,
     TernaryQuestion,
