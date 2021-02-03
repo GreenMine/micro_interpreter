@@ -3,6 +3,7 @@ use std::collections::HashMap;
 
 pub fn parse_expr(expr: &str, variables: &HashMap<String, i32>) -> Result<String, ()> {
     let tokenized = super::tokenizer::tokenize(expr);
+    println!("Tokens: {:?}", tokenized);
 
     token_parse(&tokenized[..], variables)
 }
@@ -11,7 +12,8 @@ pub fn token_parse(tokens: &[Token], variables: &HashMap<String, i32>) -> Result
     //Base case
     if tokens.len() <= 1 {
         return Ok(match tokens[0] {
-            Token::Variable(var_name) => variables.get(var_name).unwrap().to_string(),
+            Token::Variable(var_name) => variables.get(var_name).unwrap().to_string(),//TODO: Fix always allocate
+            Token::StrLiteral(str) => str.to_string(),//TODO: Fix always allocate
             _ => unimplemented!("non variable variant in token parse")
         })
     }
