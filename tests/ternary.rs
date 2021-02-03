@@ -28,7 +28,8 @@ fn nested_ternary() {
     assert_eq!(
         interpretate_string(r#"Result: ${$a = "1" ?
                                             "o" + ($b = "2" ? "t" : $b) :
-                                            "a is not one"}"#, &VARIABLES).unwrap(),
+                                            "a is not one"
+                                        }"#, &VARIABLES).unwrap(),
         "Result: ot"
     );
 }
