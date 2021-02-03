@@ -10,9 +10,8 @@ fn main() {
     variables.insert("A".to_string(), 1);
     variables.insert("B".to_string(), 2);
 
-
     //let command_example = "A: ${$A}\nB: ${$B==true?10:15}";
-    let command_example = "A: ${$A}\nB: ${$B ? 1 : 2}";
+    let command_example = "A: ${$A - $B + $B - $A}\nB: ${$B}";
     println!("Interpretated result: {:?}", interpretate_string(command_example, &mut variables));
 }
 
@@ -37,34 +36,49 @@ fn interpretate_string(mut input: &str, variables: &mut HashMap<String, i32>) ->
 fn parse_expr(expr: &str, variables: &mut HashMap<String, i32>) -> Result<String, ()> {
     let tokenized = tokenize(expr);
 
-    if let Ok(res) = token_parse(&tokenized[..], variables) {
-        return Ok(res);
-    }
-
-    if let Some(pos) = tokenized.iter()
-                                      .position(|t| *t == Token::Operation(Operation::TernaryQuestion)) {
-       let left_side_result = {
-           println!("Left token result: {:?}", token_parse(&tokenized[..pos], variables));
-       };
-    }
-
-    unimplemented!()
+    token_parse(&tokenized[..], variables)
 }
 
-fn token_parse(tokens: &[Token], variables: &mut HashMap<String, i32>) -> Result<String, ()> {
-    println!("Tokens len: {}", tokens.len());
-    if tokens.len() == 0 {
-        return Err(());
-    }
-    if tokens.len() == 1 {
-        if let Token::Variable(var) = tokens[0] {
-            return Ok(variables[var].to_string());
-        } else {
-            return Err(());
-        }
+fn token_parse(tokens: &[Token], variables: &HashMap<String, i32>) -> Result<String, ()> {
+
+    if tokens.len() <= 1 {
+        return Ok(match tokens[0] {
+            Token::Variable(var_name) => variables.get(var_name).unwrap().to_string(),
+            _ => unimplemented!("non variable variant in token parse")
+        })
     }
 
-    Err(())
+    let (min_operation_index, _) = tokens.iter()
+                                            .enumerate().rev()
+                                            .filter_map(|(i, t)| if let Token::Operation(o) = t { Some((i, get_operation_priority(*o))) } else { None }) // Get only operation
+                                            .min_by(|(_, p_1), (_, p_2)| p_1.cmp(p_2)).unwrap();
+    let min_operation = if let Token::Operation(operation) = &tokens[min_operation_index] {
+        *operation
+    } else {
+        unreachable!()
+    };
+
+    println!("Min of operation: {:?} on {} position.", min_operation, min_operation_index);
+
+    let (left_half, right_half) = (
+        token_parse(&tokens[..min_operation_index], variables)?,
+        token_parse(&tokens[min_operation_index + 1..], variables)?,
+    );
+
+    return Ok(match min_operation {
+        Operation::Plus => left_half + &right_half[..],
+        Operation::Minus => left_half + "-" + &right_half[..],
+        _ => unimplemented!("non-math operation in token parse")
+    });
+}
+
+fn get_operation_priority(operation: Operation) -> u8 {
+    match operation {
+        Operation::Plus => 2,
+        Operation::Minus => 2,
+        Operation::Mul => 1,
+        _ => unimplemented!("priority of non-math operation")
+    }
 }
 
 fn tokenize(input: &str) -> Vec<Token> {
@@ -87,6 +101,7 @@ fn tokenize(input: &str) -> Vec<Token> {
             b'?' => Token::Operation(Operation::TernaryQuestion),
             b':' => Token::Operation(Operation::TernaryElse),
             b'+' => Token::Operation(Operation::Plus),
+            b'-' => Token::Operation(Operation::Minus),
             _ => {continue;}
         };
 
@@ -109,9 +124,11 @@ enum Token<'a> {
     EndBracket
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 enum Operation {
     Plus,
+    Minus,
+    Mul,
     TernaryQuestion,
     TernaryElse
 }
