@@ -10,7 +10,7 @@ fn main() {
     variables.insert("C".to_string(), 1);
 
     //let command_example = "A: ${$A - $B+$B-$A}\nB: ${$B + \"string literal\"}";
-    let command_example = "A: ${$A + $B = $C + $B}\nB: ${$B}";
-    println!("Interpretated result: {:?}", interpreter::interpretate_string(command_example, &variables));
-
+    let command_example = r#"A: ${$A + $B = $C + $B}\nB: ${$B = "2" ? $A + "123" : $B + "321"}"#;
+    let iterpretated_string = interpreter::interpretate_string(command_example, &variables);
+    println!("Interpretated result: {:?}", iterpretated_string);
 }

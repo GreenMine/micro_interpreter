@@ -18,10 +18,8 @@ pub fn token_parse(tokens: &[Token], variables: &HashMap<String, i32>) -> Result
         })
     }
 
-    let (min_operation_index, _) = tokens.iter()
-                                            .enumerate().rev()
-                                            .filter_map(|(i, t)| if let Token::Operation(o) = t { Some((i, super::types::get_operation_priority(*o))) } else { None }) // Get only operation
-                                            .max_by(|(_, p_1), (_, p_2)| p_1.cmp(p_2)).unwrap();
+    
+    let min_operation_index = get_min_operation_index(tokens);
     let min_operation = if let Token::Operation(operation) = tokens[min_operation_index] {
         operation
     } else {
@@ -32,13 +30,32 @@ pub fn token_parse(tokens: &[Token], variables: &HashMap<String, i32>) -> Result
 
     let (left_half, right_half) = (
         token_parse(&tokens[..min_operation_index], variables)?,
-        token_parse(&tokens[min_operation_index + 1..], variables)?,
+        if min_operation != Operation::TernaryQuestion { token_parse(&tokens[min_operation_index + 1..], variables)? } else { "".to_string() },//Weird code
     );
 
     return Ok(match min_operation {
         Operation::Plus => left_half + &right_half[..],
         Operation::Minus => left_half + "-" + &right_half[..],
         Operation::Eq => if left_half == right_half { "true".to_string() } else { "false".to_string() }
+        Operation::TernaryQuestion => {
+            let right_tokens = &tokens[min_operation_index + 1..];
+            let else_position = get_min_operation_index(right_tokens);
+            token_parse(if left_half == "true" {
+                                        &right_tokens[..else_position]
+                                    } else {
+                                        &right_tokens[else_position + 1..]
+                                    }, variables)?
+            
+        }
         _ => unimplemented!("non-understand operation `{:?}` in token parse", min_operation)
     });
+}
+
+
+fn get_min_operation_index(tokens: &[Token]) -> usize {
+    let (min_operation_index, _) = tokens.iter()
+                                                .enumerate().rev()
+                                                .filter_map(|(i, t)| if let Token::Operation(o) = t { Some((i, super::types::get_operation_priority(*o))) } else { None }) // Get only operation
+                                                .max_by(|(_, p_1), (_, p_2)| p_1.cmp(p_2)).unwrap();
+    min_operation_index
 }
