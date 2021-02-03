@@ -32,6 +32,7 @@ pub fn tokenize(input: &str) -> Vec<Token> {
             b':' => Token::Operation(Operation::TernaryElse),
             b'+' => Token::Operation(Operation::Plus),
             b'-' => Token::Operation(Operation::Minus),
+            b'=' => Token::Operation(Operation::Eq),
             _ => {
                 i += 1;
                 continue;

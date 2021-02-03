@@ -16,16 +16,17 @@ lazy_static! {
 }
 
 #[test]
-fn str_literal() {
+fn eq_test() {
     assert_eq!(
-        interpretate_string(r#"a: ${"some a - " + $a}"#, &VARIABLES).unwrap(),
-        "a: some a - 1"
+        interpretate_string(r#"A is one? ${$a = "1"}"#, &VARIABLES).unwrap(),
+        "A is one? true"
     );
 }
+
 #[test]
-fn two_literal() {
+fn two_var_eq() {
     assert_eq!(
-        interpretate_string(r#"result: (${"a and b: " + $a + " and " + $b + "."})"#, &VARIABLES).unwrap(),
-        interpretate_string(r#"result: (a and b: ${$a} and ${$b}.)"#, &VARIABLES).unwrap(),
+        interpretate_string("A == B? ${$a=$b}", &VARIABLES).unwrap(),
+        "A == B? false"
     );
 }

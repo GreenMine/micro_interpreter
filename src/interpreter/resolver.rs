@@ -21,7 +21,7 @@ pub fn token_parse(tokens: &[Token], variables: &HashMap<String, i32>) -> Result
     let (min_operation_index, _) = tokens.iter()
                                             .enumerate().rev()
                                             .filter_map(|(i, t)| if let Token::Operation(o) = t { Some((i, super::types::get_operation_priority(*o))) } else { None }) // Get only operation
-                                            .min_by(|(_, p_1), (_, p_2)| p_1.cmp(p_2)).unwrap();
+                                            .max_by(|(_, p_1), (_, p_2)| p_1.cmp(p_2)).unwrap();
     let min_operation = if let Token::Operation(operation) = tokens[min_operation_index] {
         operation
     } else {
@@ -38,6 +38,7 @@ pub fn token_parse(tokens: &[Token], variables: &HashMap<String, i32>) -> Result
     return Ok(match min_operation {
         Operation::Plus => left_half + &right_half[..],
         Operation::Minus => left_half + "-" + &right_half[..],
-        _ => unimplemented!("non-math operation in token parse")
+        Operation::Eq => if left_half == right_half { "true".to_string() } else { "false".to_string() }
+        _ => unimplemented!("non-understand operation `{:?}` in token parse", min_operation)
     });
 }
