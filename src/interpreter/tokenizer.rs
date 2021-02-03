@@ -9,7 +9,7 @@ pub fn tokenize(input: &str) -> Vec<Token> {
             b'$' => { //Get variable name
                 let start_index = i + 1;
                 let mut var_index = start_index;
-                while var_index < chars.len() && chars[var_index].is_ascii_alphabetic() {
+                while var_index < chars.len() && is_variable_char(chars[var_index]) {
                     var_index += 1;
                 }
                 i = var_index - 1;
@@ -22,11 +22,7 @@ pub fn tokenize(input: &str) -> Vec<Token> {
                 while lit_index < chars.len() && chars[lit_index] != b'"' {
                     lit_index += 1;
                 }
-                if lit_index == chars.len() - 1 {
-                    i = lit_index;
-                } else {
-                    i = lit_index + 1;
-                }
+                i = lit_index;
 
                 Token::StrLiteral(&input[start_index..i])
             }
@@ -48,4 +44,8 @@ pub fn tokenize(input: &str) -> Vec<Token> {
     }
 
     tokens
+}
+
+fn is_variable_char(symbol: u8) -> bool {
+    symbol.is_ascii_alphabetic() || symbol == b'_'
 }

@@ -11,7 +11,7 @@ pub enum Token<'a> {
 pub enum Operation {
     Plus,
     Minus,
-    Mul,
+    Eq,
     TernaryQuestion,
     TernaryElse
 }
@@ -20,7 +20,7 @@ pub fn get_operation_priority(operation: Operation) -> u8 {
     match operation {
         Operation::Plus => 2,
         Operation::Minus => 2,
-        Operation::Mul => 1,
+        Operation::Eq => 3,
         _ => unimplemented!("priority of non-math operation")
     }
 }

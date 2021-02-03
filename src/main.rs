@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-mod interpreter;
+pub mod interpreter;
 
 fn main() {
     let mut variables: HashMap<String, i32> = HashMap::new();
