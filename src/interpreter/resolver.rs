@@ -54,6 +54,7 @@ pub fn token_parse(mut  tokens: &[Token], variables: &HashMap<String, i32>) -> P
         Operation::Plus => left_half + &right_half[..],
         Operation::Minus => left_half + "-" + &right_half[..],
         Operation::Eq => if left_half == right_half { "true".to_string() } else { "false".to_string() }
+        Operation::NotEq => if left_half != right_half { "true".to_string() } else { "false".to_string() }
         Operation::TernaryQuestion => right_half,
         _ => unimplemented!("non-understand operation `{:?}` in token parse", min_operation)
     });

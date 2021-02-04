@@ -4,6 +4,7 @@ pub fn tokenize(input: &str) -> Vec<Token> {
     let mut tokens = Vec::new();
     let chars: &[u8] = input.as_bytes();
     let mut i: usize = 0;
+
     while i < chars.len() { //Works only with latin symbols
         let token = match chars[i] {
             b'$' => { //Get variable name
@@ -33,12 +34,19 @@ pub fn tokenize(input: &str) -> Vec<Token> {
             b'+' => Token::Operation(Operation::Plus),
             b'-' => Token::Operation(Operation::Minus),
             b'=' => Token::Operation(Operation::Eq),
-            _ => {
+            b'!' => {
                 i += 1;
-                continue;
+                if chars[i] == b'=' {
+                    Token::Operation(Operation::NotEq)
+                } else {
+                   continue;
+                }
             }
+            _ => {
+                   i += 1;
+                   continue;
+            } 
         };
-
         tokens.push(token);
 
         i += 1;

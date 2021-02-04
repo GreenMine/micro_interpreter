@@ -18,7 +18,7 @@ lazy_static! {
 #[test]
 fn eq_test() {
     assert_eq!(
-        interpretate_string(r#"A is one? ${$a = "1"}"#, &VARIABLES).unwrap(),
+        interpretate_string(r#"A is one? {$a = "1"}"#, &VARIABLES).unwrap(),
         "A is one? true"
     );
 }
@@ -26,7 +26,7 @@ fn eq_test() {
 #[test]
 fn two_var_eq() {
     assert_eq!(
-        interpretate_string("A == B? ${$a=$b}", &VARIABLES).unwrap(),
+        interpretate_string("A == B? {$a=$b}", &VARIABLES).unwrap(),
         "A == B? false"
     );
 }

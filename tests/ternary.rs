@@ -18,7 +18,7 @@ lazy_static! {
 #[test]
 fn simple_ternary() {
     assert_eq!(
-        interpretate_string(r#"A is ${$a = "1" ? "one" : "not one"}!"#, &VARIABLES).unwrap(),
+        interpretate_string(r#"A is {$a = "1" ? "one" : "not one"}!"#, &VARIABLES).unwrap(),
         "A is one!"
     );
 }
@@ -26,7 +26,7 @@ fn simple_ternary() {
 #[test]
 fn nested_ternary() {
     assert_eq!(
-        interpretate_string(r#"Result: ${$a = "1" ?
+        interpretate_string(r#"Result: {$a = "1" ?
                                             "o" + ($b = "2" ? "t" : $b) :
                                             "a is not one"
                                         }"#, &VARIABLES).unwrap(),

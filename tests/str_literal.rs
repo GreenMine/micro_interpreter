@@ -18,14 +18,14 @@ lazy_static! {
 #[test]
 fn str_literal() {
     assert_eq!(
-        interpretate_string(r#"a: ${"some a - " + $a}"#, &VARIABLES).unwrap(),
+        interpretate_string(r#"a: {"some a - " + $a}"#, &VARIABLES).unwrap(),
         "a: some a - 1"
     );
 }
 #[test]
 fn two_literal() {
     assert_eq!(
-        interpretate_string(r#"result: (${"a and b: " + $a + " and " + $b + "."})"#, &VARIABLES).unwrap(),
-        interpretate_string(r#"result: (a and b: ${$a} and ${$b}.)"#, &VARIABLES).unwrap(),
+        interpretate_string(r#"result: ({"a and b: " + $a + " and " + $b + "."})"#, &VARIABLES).unwrap(),
+        interpretate_string(r#"result: (a and b: {$a} and {$b}.)"#, &VARIABLES).unwrap(),
     );
 }

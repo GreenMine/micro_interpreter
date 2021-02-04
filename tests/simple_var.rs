@@ -18,7 +18,7 @@ lazy_static! {
 #[test]
 fn simgle_var() {
     assert_eq!(
-        interpretate_string("a: ${$var_a}", &VARIABLES).unwrap(),
+        interpretate_string("a: {$var_a}", &VARIABLES).unwrap(),
         "a: 1"
     );
 }
@@ -26,7 +26,7 @@ fn simgle_var() {
 #[test]
 fn text_after_var() {
     assert_eq!(
-        interpretate_string("b: ${$var_b}, some text", &VARIABLES).unwrap(),
+        interpretate_string("b: {$var_b}, some text", &VARIABLES).unwrap(),
         "b: 2, some text"
     );
 }

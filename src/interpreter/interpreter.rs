@@ -9,7 +9,7 @@ pub fn interpretate_string(mut input: &str, variables: &HashMap<String, i32>) ->
         //Code block parsing
         //println!("In code block expr: {}", &input[start..end]);
 
-        result += &super::parse_expr(&input[start + 2..end - 1], variables)?[..];
+        result += &super::parse_expr(&input[start + 1..end - 1], variables)?[..];
 
         input = &input[end..];
     }
@@ -19,7 +19,7 @@ pub fn interpretate_string(mut input: &str, variables: &HashMap<String, i32>) ->
 }
 
 fn get_code_block(input: &str) -> Option<(usize, usize)> {
-    let start = input.chars().position(|c| c == '$')?;
+    let start = input.chars().position(|c| c == '{')?;
     let end = (&input[start..]).chars().position(|c| c == '}')? + start + 1;
 
     Some((start, end))
