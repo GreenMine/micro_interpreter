@@ -2,7 +2,7 @@ use super::{Error, ParseResult, types::{Token, Operation}};
 use std::collections::HashMap;
 
 
-pub fn parse_expr(expr: &str, variables: &HashMap<String, i32>) -> ParseResult {
+pub fn interpretate_expr(expr: &str, variables: &HashMap<String, i32>) -> ParseResult {
     let tokenized = super::tokenizer::tokenize(expr);
 
     token_parse(&tokenized[..], variables)

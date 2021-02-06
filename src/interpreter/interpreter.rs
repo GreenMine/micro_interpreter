@@ -9,7 +9,7 @@ pub fn interpretate_string(mut input: &str, variables: &HashMap<String, i32>) ->
         //Code block parsing
         //println!("In code block expr: {}", &input[start..end]);
 
-        result += &super::parse_expr(&input[start + 1..end - 1], variables)?[..];
+        result += &super::interpretate_expr(&input[start + 1..end - 1], variables)?[..];
 
         input = &input[end..];
     }

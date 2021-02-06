@@ -23,4 +23,6 @@ fn main() {
     println!("Elepsed {}micros. to interpretate string.", start.elapsed().as_micros());
 
     println!("Interpretated result: {:?}", iterpretated_string);
+
+    println!("Interpretate expression result: {}", interpreter::interpretate_expr("$A + $B + $C", &variables).unwrap());
 }
