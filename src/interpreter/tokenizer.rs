@@ -1,4 +1,4 @@
-use super::types::{Token, Operation};
+use super::{types::{Token, Operation}, consts::STRING_LITERAL_SYMBOL};
 
 pub fn tokenize(input: &str) -> Vec<Token> {
     let mut tokens = Vec::new();
@@ -17,10 +17,10 @@ pub fn tokenize(input: &str) -> Vec<Token> {
 
                 Token::Variable(&input[start_index..var_index])
             },
-            b'"' => {//Get string literal
+            STRING_LITERAL_SYMBOL => {//Get string literal
                 let start_index = i + 1;
                 let mut lit_index = start_index;
-                while lit_index < chars.len() && chars[lit_index] != b'"' {
+                while lit_index < chars.len() && chars[lit_index] != STRING_LITERAL_SYMBOL {
                     lit_index += 1;
                 }
                 i = lit_index;

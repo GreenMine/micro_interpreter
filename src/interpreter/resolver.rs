@@ -2,13 +2,13 @@ use super::{Error, ParseResult, types::{Token, Operation}};
 use std::collections::HashMap;
 
 
-pub fn interpretate_expr(expr: &str, variables: &HashMap<String, i32>) -> ParseResult {
+pub fn interpretate_expr<T: ToString>(expr: &str, variables: &HashMap<String, T>) -> ParseResult {
     let tokenized = super::tokenizer::tokenize(expr);
 
     token_parse(&tokenized[..], variables)
 }
 
-pub fn token_parse(mut  tokens: &[Token], variables: &HashMap<String, i32>) -> ParseResult {
+pub fn token_parse<T: ToString>(mut  tokens: &[Token], variables: &HashMap<String, T>) -> ParseResult {
     //Base case
     if tokens.len() <= 1 {
         return Ok(match tokens[0] {

@@ -10,13 +10,12 @@ fn main() {
     variables.insert("B".to_string(), 2);
     variables.insert("C".to_string(), 3);
 
-    //let command_example = "A: ${$A - $B+$B-$A}\nB: ${$B + \"string literal\"}";
-    let command_example = r#"A: {$A + $B = $C + $B}, B: {$B = "2" ? $A + "123" : $B + "321"}, C: {$B + ($A + $C) = $B + $A + $C}
+    let command_example = "A: {$A + $B = $C + $B}, B: {$B = '2' ? $A + '123' : $B + '321'}, C: {$B + ($A + $C) = $B + $A + $C}
     Nested ternary: {
-        $B != "2" ?
-        ($A = "3" ? "b = 2 && a = 3" : "b = 2") :
-        "???"
-    }"#;
+        $B != '2' ?
+        ($A = '3' ? 'b = 2 && a = 3' : 'b = 2') :
+        '???'
+    }";
 
     let start = std::time::Instant::now();
     let iterpretated_string = interpreter::interpretate_string(command_example, &variables);

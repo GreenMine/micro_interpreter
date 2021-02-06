@@ -18,7 +18,7 @@ lazy_static! {
 #[test]
 fn eq_test() {
     assert_eq!(
-        interpretate_string(r#"A is one? {$a = "1"}"#, &VARIABLES).unwrap(),
+        interpretate_string("A is one? {$a = '1'}", &VARIABLES).unwrap(),
         "A is one? true"
     );
 }

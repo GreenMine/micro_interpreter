@@ -1,0 +1,1 @@
+pub const STRING_LITERAL_SYMBOL: u8 = b'\'';

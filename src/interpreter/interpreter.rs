@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use super::ParseResult;
 
-pub fn interpretate_string(mut input: &str, variables: &HashMap<String, i32>) -> ParseResult {
+pub fn interpretate_string<T: ToString>(mut input: &str, variables: &HashMap<String, T>) -> ParseResult {
     let mut result = String::with_capacity(input.len());
     while let Some((start, end)) = get_code_block(input) {
         result += &input[..start];
